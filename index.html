@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIAULO - Portfolio Vaporwave</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Russo+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #ff006e;
+            --neon-purple: #8338ec;
+            --neon-blue: #3a86ff;
+            --neon-cyan: #06ffa5;
+            --dark-bg: #0a0a0a;
+            --grid-color: rgba(255, 0, 110, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: var(--dark-bg);
+            color: var(--neon-cyan);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Loading Animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-cat {
+            font-size: 2rem;
+            color: var(--neon-pink);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        /* Background Effects */
+        .vaporwave-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, var(--dark-bg) 0%, rgba(255, 0, 110, 0.1) 25%, rgba(131, 56, 236, 0.1) 50%, rgba(6, 255, 165, 0.1) 75%, var(--dark-bg) 100%);
+            z-index: -1;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 110, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 110, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .main-title {
+            font-family: 'Russo One', sans-serif;
+            font-size: clamp(3rem, 8vw, 8rem);
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple), var(--neon-blue), var(--neon-cyan));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px var(--neon-pink);
+            margin-bottom: 1rem;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            margin-bottom: 2rem;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 2px solid var(--neon-purple);
+            color: var(--neon-purple);
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-item:hover::before {
+            left: 100%;
+        }
+
+        .nav-item:hover {
+            color: var(--dark-bg);
+            background: var(--neon-purple);
+            box-shadow: 0 0 20px var(--neon-purple);
+            transform: translateY(-2px);
+        }
+
+        /* ASCII Art Section */
+        .ascii-cats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cat-art {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 10px;
+            padding: 2rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+            line-height: 1.2;
+            color: var(--neon-cyan);
+            white-space: pre;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cat-art::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple), var(--neon-blue), var(--neon-cyan));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .cat-art:hover::before {
+            opacity: 1;
+        }
+
+        .cat-art:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 0, 110, 0.3);
+        }
+
+        .cat-1 {
+            animation: blink 3s infinite;
+        }
+
+        .cat-2 {
+            animation: wiggle 4s infinite;
+        }
+
+        .cat-3 {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.7; }
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(1deg); }
+            75% { transform: rotate(-1deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Sections */
+        .section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-family: 'Russo One', sans-serif;
+            font-size: 2.5rem;
+            color: var(--neon-pink);
+            text-shadow: 0 0 20px var(--neon-pink);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        .section p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--neon-cyan);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--neon-purple);
+            margin-top: 4rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--neon-cyan);
+            color: var(--dark-bg);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 3rem;
+            }
+            
+            nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .ascii-cats {
+                grid-template-columns: 1fr;
+            }
+            
+            .cat-art {
+                font-size: 0.6rem;
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+        }
+
+        .glitch::before {
+            animation: glitch 2s infinite;
+            color: var(--neon-pink);
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch 2s infinite reverse;
+            color: var(--neon-blue);
+            z-index: -2;
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader" id="loader">
+        <div class="loading-cat">
+            ╱|、<br>
+            (˚ˎ 。7<br>
+            |、˜〵<br>
+            じしˍ,)ノ
+        </div>
+    </div>
+
+    <div class="vaporwave-bg"></div>
+    <div class="grid-overlay"></div>
+
+    <header>
+        <h1 class="main-title glitch" data-text="MIAULO">MIAULO</h1>
+        <p class="subtitle">Portfolio Personal · Desarrollo Web · Arte Digital</p>
+    </header>
+
+    <nav>
+        <a href="#proyectos" class="nav-item">Proyectos</a>
+        <a href="#sobre-mi" class="nav-item">Sobre Mí</a>
+        <a href="#contacto" class="nav-item">Contacto</a>
+    </nav>
+
+    <main>
+        <section class="ascii-cats">
+            <div class="cat-art cat-1">
+    ╱|、
+   (˚ˎ 。7  
+    |、˜〵  
+   じしˍ,)ノ
+            </div>
+            <div class="cat-art cat-2">
+   ∧,,,∧
+  (  ̳• · • ̳)
+   /    づ♡
+            </div>
+            <div class="cat-art cat-3">
+      |\   /|
+     | ･ x ･ |
+     \   ω   /
+      \_____/
+            </div>
+            <div class="cat-art cat-1">
+   /\   /\  
+  (  . .)
+   )   (
+  (  v  )
+ ^^  ^^
+            </div>
+            <div class="cat-art cat-2">
+        ∧___∧
+       (  ̳ ◕   ◕ ̳)
+       /           \
+      (  ̳ ̳ ̳ ̳ ̳ ̳ ̳ ̳)
+            </div>
+            <div class="cat-art cat-3">
+    ╭( ◔ ◔ )╮
+   (           )
+    ╰─∪─∪─╯
+            </div>
+        </section>
+
+        <section id="proyectos" class="section">
+            <h2>Proyectos</h2>
+            <p>
+                Aquí encontrarás una colección de mis trabajos más recientes en desarrollo web, 
+                arte digital y experimentos creativos. Cada proyecto refleja mi pasión por 
+                combinar tecnología y estética en experiencias únicas.
+            </p>
+        </section>
+
+        <section id="sobre-mi" class="section">
+            <h2>Sobre Mí</h2>
+            <p>
+                Soy un desarrollador apasionado por la estética vaporwave y la cultura digital. 
+                Me especializo en crear experiencias web inmersivas que combinan nostalgia 
+                retro con tecnología moderna. Siempre en busca de nuevas formas de expresar 
+                creatividad a través del código.
+            </p>
+        </section>
+
+        <section id="contacto" class="section">
+            <h2>Contacto</h2>
+            <p>
+                ¿Interesado en colaborar? Me encanta trabajar en proyectos creativos y 
+                experimentales. No dudes en contactarme para discutir ideas, proyectos 
+                o simplemente para charlar sobre tecnología y arte digital.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="social-links">
+            <a href="#" class="social-link">GitHub</a>
+            <a href="#" class="social-link">Twitter</a>
+            <a href="#" class="social-link">Instagram</a>
+            <a href="#" class="social-link">Email</a>
+        </div>
+        <p>&copy; 2024 MIAULO - Diseño Vaporwave Digital</p>
+    </footer>
+
+    <script>
+        // Loading animation
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Interactive cat animations
+        document.querySelectorAll('.cat-art').forEach(cat => {
+            cat.addEventListener('mouseenter', function() {
+                this.style.color = '#ff006e';
+            });
+            
+            cat.addEventListener('mouseleave', function() {
+                this.style.color = '#06ffa5';
+            });
+        });
+
+        // Random glitch effect on title
+        const title = document.querySelector('.main-title');
+        setInterval(() => {
+            title.style.animation = 'none';
+            setTimeout(() => {
+                title.style.animation = 'gradientShift 3s ease-in-out infinite';
+            }, 100);
+        }, 5000);
+
+        // Parallax effect for background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            document.querySelector('.vaporwave-bg').style.transform = `translateY(${rate}px)`;
+        });
+
+        // Dynamic text shadow based on mouse position
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            title.style.textShadow = `
+                ${x * 20}px ${y * 20}px 30px #ff006e,
+                ${-x * 15}px ${-y * 15}px 20px #8338ec,
+                ${x * 10}px ${-y * 25}px 25px #06ffa5
+            `;
+        });
+    </script>
+</body>
+</html>
